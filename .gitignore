@@ -1,0 +1,10 @@
+/target/
+/data/
+/.mvn-local/
+*.log
+
+/.idea/
+/.vscode/
+*.iml
+.env
+.env.*

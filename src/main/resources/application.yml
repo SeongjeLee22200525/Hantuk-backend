@@ -1,0 +1,46 @@
+server:
+  address: ${SERVER_ADDRESS:127.0.0.1}
+  port: ${SERVER_PORT:8081}
+  error:
+    include-message: never
+spring:
+  application:
+    name: hantteok-server
+  profiles:
+    default: local
+  datasource:
+    url: ${DB_URL:jdbc:h2:file:./data/hantteok;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH;LOCK_TIMEOUT=10000}
+    username: ${DB_USERNAME:sa}
+    password: ${DB_PASSWORD:}
+  flyway:
+    enabled: true
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+app:
+  demo-enabled: false
+  cors-origins: ${CORS_ORIGINS:http://127.0.0.1:8080,http://localhost:8080}
+  session-hours: 24
+  payment-mode: mock
+logging:
+  level:
+    org.springframework.web: INFO
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+app:
+  demo-enabled: true
+---
+spring:
+  config:
+    activate:
+      on-profile: production
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+app:
+  demo-enabled: false
+  cors-origins: ${CORS_ORIGINS}
