@@ -1,5 +1,12 @@
 # 한턱 Spring Boot 서버
 
+## 최신 프론트용 v2 API
+
+`8c56fe0`의 새 프론트는 `/api/v2`를 사용합니다. 아이디 로그인(hantuck01, leader01~03, store01, admin01 / welcome123!), 그룹 가입 승인·즐겨찾기, 가게 심사·반려·재신청, 금액/선결제 후원, 10분 QR, 사용 승인·취소, 감사 메시지·사진을 지원합니다. 상세 계약은 [v2 연동 문서](API-V2.md)를 참고하세요. 기존 DB는 Flyway V2로 확장하며 아래 v1 API와 데이터는 보존합니다.
+
+아래 설명은 기존 이메일 로그인 기반 v1 API 문서입니다.
+
+
 Flutter의 `lib/src/models.dart`, `store.dart`, `pages/account.dart`, `pages/merchant.dart`와 `test/store_test.dart`의 거래 규칙을 서버로 옮긴 REST API입니다.
 
 Java 17, Spring Boot 3.5.16, Spring JDBC, Flyway, BCrypt를 사용합니다. 기본 DB는 파일형 H2입니다. H2 파일에 계정·세션·거래·환불·정산이 저장되어 재시작해도 유지됩니다. PostgreSQL 드라이버와 Flyway 지원도 포함했으며, 자동화 테스트는 H2에서 수행합니다.
@@ -28,7 +35,9 @@ macOS/Linux에서는 `./mvnw`를 사용합니다. 실행 위치를 `server/`로 
 java -jar target/hantteok-server-0.1.0.jar
 ```
 
-이 서버는 API를 제공합니다. 기존 Flutter UI는 여전히 `AppStore`와 SharedPreferences를 사용하는 로컬 데모이며, 이번 변경에서 HTTP 서버에 연결하지 않았습니다. 따라서 Flutter의 데모 로그인/가게 역할 전환은 서버 세션을 만들지 않습니다. 프런트엔드 연동 시 비동기 API 호출로 전환하고 서버 응답을 상태의 기준으로 사용해야 합니다.
+Flutter 기본 진입점은 이제 이 서버의 API에 연결됩니다. `lib/src/remote_store.dart`가 비동기 명령·계정별 스냅샷·QR 폴링을 처리하며 서버 응답을 상태의 기준으로 사용합니다. Flutter에서 `--dart-define=API_BASE_URL=http://127.0.0.1:8081/api`로 주소를 지정할 수 있습니다. 기존 오프라인 `AppStore`는 화면 테스트용으로만 유지합니다.
+
+이용자와 가게는 별도 세션으로 로그인합니다. 로컬 서버의 `demo@hantteok.app` 계정에는 가게 권한이 없고, `merchant@hantteok.app`이 가게를 소유합니다. UI의 빠른 로그인도 실제 `/auth/login`을 호출합니다.
 
 ## 로컬 데모 계정
 
@@ -169,3 +178,8 @@ $env:CORS_ORIGINS='https://your-frontend.example'
 `ServerIntegrationTest`는 MockMvc로 실제 HTTP 인증/QR 흐름과 CORS·입력 검증을 실행합니다. 서비스 통합 테스트는 실제 H2 트랜잭션을 사용해 중복 승인, 두 이용자의 동시 차감, 개인 누적 한도, 만료·재발급·취소, 메뉴 제한, 가게 권한, 환불 동결, 결제 멱등성, 개인정보 분리, 정산을 검증합니다.
 
 공식 참고: [Spring Boot 3.5 시스템 요구사항](https://docs.spring.io/spring-boot/3.5/system-requirements.html), [Jakarta Persistence의 비관적 잠금 설명](https://jakarta.ee/specifications/persistence/3.1/apidocs/jakarta.persistence/jakarta/persistence/lockmodetype). 구현은 JPA 대신 Spring JDBC의 명시적 SQL 잠금을 사용합니다.
+
+
+## Windows 제한 실행 환경의 파일 DB
+
+일부 Windows 제한 토큰에서는 실제 파일 쓰기가 가능해도 `Files.isWritable`이 false를 반환하여 H2가 기존 파일을 읽기 전용으로 여는 경우가 있습니다. 제공한 `outputs/run-server.ps1`은 로컬 기본 DB에 한해 `-Dhantteok.h2.writeProbe=true`와 `jdbc:h2:writeprobe:./data/hantteok;...`를 사용합니다. 이 어댑터는 기존 파일을 쓰기 모드로 열 수 있는지만 확인하며 바이트나 OS 권한을 변경하지 않습니다. `DB_URL`을 명시하면 어댑터를 사용하지 않습니다. 일반 환경에서 `mvnw spring-boot:run`과 표준 `jdbc:h2:file:` URL은 그대로 사용할 수 있습니다.

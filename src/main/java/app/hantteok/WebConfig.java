@@ -18,6 +18,7 @@ public class WebConfig implements WebMvcConfigurer {
             @Override public boolean preHandle(HttpServletRequest request,HttpServletResponse response,Object handler) {
                 if("OPTIONS".equals(request.getMethod())) return true;
                 String path=request.getRequestURI();
+                if(path.startsWith("/api/v2/")) return true; // v2 controller validates its own opaque sessions.
                 if(path.equals("/api/health") || ("POST".equals(request.getMethod()) && (path.equals("/api/auth/login") || path.equals("/api/auth/register")))) return true;
                 request.setAttribute("userId",auth.authenticate(request.getHeader("Authorization")));
                 return true;
