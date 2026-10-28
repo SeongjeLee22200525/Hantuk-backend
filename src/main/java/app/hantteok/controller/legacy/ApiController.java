@@ -1,4 +1,4 @@
-package app.hantteok.controller;
+package app.hantteok.controller.legacy;
 
 import app.hantteok.service.AuthService;
 import app.hantteok.service.BenefitService;

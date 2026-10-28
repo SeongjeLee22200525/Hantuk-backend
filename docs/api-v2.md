@@ -19,6 +19,22 @@
 
 ## API
 
+## 기능별 컨트롤러와 경로
+
+최신 프론트는 기능별 경로를 사용합니다. 인증 경로는 AuthController, 상태는 HealthController, 스냅샷 조회는 SnapshotController에서 처리합니다. 기존 v1 ApiController는 controller/legacy에 보관합니다.
+
+|컨트롤러|POST 경로 (모두 `/api/v2` 기준)|
+|---|---|
+|GroupController|`/groups/join`, `/groups/invite`, `/groups/approve`, `/groups/favorite`|
+|StoreController|`/stores/favorite`, `/stores/apply`, `/stores/approve`, `/stores/reject`, `/stores/thumbnail`, `/stores/menus/save`, `/stores/menus/remove`|
+|DonationController|`/donations/complete`|
+|UsageController|`/usages/begin`, `/usages/find`, `/usages/amount`, `/usages/approve`, `/usages/cancel`, `/usages/reverse`, `/usages/thanks`|
+
+기능별 POST 본문은 `{commandId, data}`이며 action은 URL에 의해 서버에서 고정됩니다. data 내부 필드는 아래 명령 표와 같습니다. 응답은 기존과 같은 `{result, snapshot}`입니다. 인증·권한·트랜잭션·중복 요청 처리는 동일한 서비스를 사용합니다.
+
+기존 `POST /api/v2/commands`는 CommandController에서 `{commandId, action, data}` 형식을 계속 지원합니다. 동일한 계정·명령 ID·내용은 새 경로와 호환 경로를 오가더라도 한 번만 실행됩니다. 기능별 경로에 action 필드를 보내면 400을 반환합니다.
+
+
 - `GET /api/v2/health`: 상태 및 demo 여부
 - `GET /api/v2/auth/availability?id=...`: 아이디 사용 가능 여부
 - `POST /api/v2/auth/email-challenges`: `{email}` → challengeId
@@ -91,4 +107,4 @@ flutter build web --release --no-web-resources-cdn
 .\gradlew.bat clean build
 ```
 
-기존 화면 테스트 103개, 새 서버 모드 위젯 테스트, 실제 서버를 사용한 전체 흐름 테스트를 실행했습니다. 서버 테스트는 기존 15개와 새 v2 11개로 구성합니다. 동시 승인, 권한 위조, 코드 만료, 초대 인증, 결제 재시도, 사용 복구, 감사 사진 공개 범위와 이모지 글자 수를 확인합니다.
+기존 화면 테스트 103개, 새 서버 모드 위젯 테스트, 실제 서버를 사용한 전체 흐름 테스트를 실행했습니다. 서버 테스트는 기존 15개와 새 v2 14개로 구성합니다. 동시 승인, 권한 위조, 코드 만료, 초대 인증, 결제 재시도, 사용 복구, 감사 사진 공개 범위와 이모지 글자 수를 확인합니다.

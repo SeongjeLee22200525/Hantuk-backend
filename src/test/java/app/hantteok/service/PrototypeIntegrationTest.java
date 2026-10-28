@@ -176,4 +176,58 @@ class PrototypeIntegrationTest {
         mvc.perform(options("/api/v2/commands").header("Origin","http://127.0.0.1:8080").header("Access-Control-Request-Method","POST").header("Access-Control-Request-Headers","authorization,content-type")).andExpect(status().isOk()).andExpect(header().string("Access-Control-Allow-Origin","http://127.0.0.1:8080"));
         clock.time=clock.time.plus(Duration.ofHours(24));mvc.perform(get("/api/v2/snapshot").header("Authorization","Bearer "+token)).andExpect(status().isUnauthorized());
     }
+    private String bearer(String actor) {
+        return "Bearer " + auth.login(map("id", actor, "password", "welcome123!")).get("accessToken");
+    }
+    private Map<String,Object> httpCommand(String bearer, String path, Map<String,Object> data) throws Exception {
+        var result=mvc.perform(post("/api/v2/"+path).header("Authorization",bearer)
+            .contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsBytes(map("commandId",UUID.randomUUID().toString(),"data",data))))
+            .andExpect(status().isOk()).andReturn();
+        return json.readValue(result.getResponse().getContentAsByteArray(),Map.class);
+    }
+    @Test void featureRoutesRequireAuthenticationAndValidatedEnvelopes() throws Exception {
+        var paths=List.of("groups/join","groups/invite","groups/approve","groups/favorite",
+            "stores/favorite","stores/apply","stores/approve","stores/reject","stores/thumbnail","stores/menus/save","stores/menus/remove",
+            "donations/complete","usages/begin","usages/find","usages/amount","usages/approve","usages/cancel","usages/reverse","usages/thanks");
+        String token=bearer("hantuck01");
+        for(String path:paths) {
+            var body=json.writeValueAsBytes(map("commandId",UUID.randomUUID().toString(),"data",map()));
+            mvc.perform(post("/api/v2/"+path).contentType(MediaType.APPLICATION_JSON).content(body)).andExpect(status().isUnauthorized());
+            mvc.perform(post("/api/v2/"+path).header("Authorization",token).contentType(MediaType.APPLICATION_JSON)
+                .content("{\"commandId\":\"short\",\"data\":{}}")).andExpect(status().isBadRequest());
+        }
+        mvc.perform(post("/api/v2/groups/favorite").header("Authorization",token).contentType(MediaType.APPLICATION_JSON)
+            .content(json.writeValueAsBytes(map("commandId",UUID.randomUUID().toString(),"action","store.favorite","data",map("groupId","group-1")))))
+            .andExpect(status().isBadRequest());
+    }
+    @Test void featureAndCompatibilityRoutesShareIdempotencyAndPermissions() throws Exception {
+        String member=bearer("hantuck01"), leader=bearer("leader01"), commandId=UUID.randomUUID().toString();
+        var data=map("groupId","group-1");
+        var first=mvc.perform(post("/api/v2/groups/favorite").header("Authorization",member).contentType(MediaType.APPLICATION_JSON)
+            .content(json.writeValueAsBytes(map("commandId",commandId,"data",data)))).andExpect(status().isOk()).andReturn();
+        var retry=mvc.perform(post("/api/v2/commands").header("Authorization",member).contentType(MediaType.APPLICATION_JSON)
+            .content(json.writeValueAsBytes(map("commandId",commandId,"action","group.favorite","data",data)))).andExpect(status().isOk()).andReturn();
+        assertThat(json.readTree(retry.getResponse().getContentAsByteArray())).isEqualTo(json.readTree(first.getResponse().getContentAsByteArray()));
+        var joined=httpCommand(member,"groups/join",map("groupId","group-1","introduction","가입 신청"));
+        String application=str((Map<String,Object>)joined.get("result"),"id");
+        mvc.perform(post("/api/v2/groups/approve").header("Authorization",member).contentType(MediaType.APPLICATION_JSON)
+            .content(json.writeValueAsBytes(map("commandId",UUID.randomUUID().toString(),"data",map("applicationId",application)))))
+            .andExpect(status().isForbidden());
+        httpCommand(leader,"groups/approve",map("applicationId",application));
+        assertThat(service.snapshot("hantuck01").get("members").toString()).contains("group-1");
+        httpCommand(member,"stores/favorite",map("storeId","example-store-1"));
+        httpCommand(member,"donations/complete",map("checkoutId",UUID.randomUUID().toString(),"type","money","groupId","group-1","amount",1000));
+    }
+    @Test void usageControllerRoutesCompleteAndReverseAnActualTransaction() throws Exception {
+        String user=bearer("leader03"), store=bearer("store01");
+        var request=(Map<String,Object>)httpCommand(user,"usages/begin",map("offerId","example-store-1")).get("result");
+        String id=str(request,"id");
+        httpCommand(store,"usages/find",map("storeId","example-store-1","code",byId("leader03","requests",id).get("code")));
+        httpCommand(store,"usages/amount",map("storeId","example-store-1","requestId",id,"amount",1000));
+        var receipt=(Map<String,Object>)httpCommand(user,"usages/approve",map("requestId",id)).get("result");
+        httpCommand(user,"usages/thanks",map("receiptId",receipt.get("id"),"message","감사합니다"));
+        httpCommand(store,"usages/reverse",map("storeId","example-store-1","receiptId",receipt.get("id"),"reason","잘못된 주문"));
+        assertThat(((Number)byId("hantuck01","offers","example-store-1").get("usedAmount")).longValue()).isEqualTo(35000L);
+    }
+
 }

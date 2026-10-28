@@ -41,7 +41,9 @@ hantuk-backend/
     │   ├── java/app/hantteok/
     │   │   ├── ServerApplication.java
     │   │   ├── config/          # 웹·CORS, 시계, 비밀번호 인코더
-    │   │   ├── controller/      # HTTP 요청·응답과 API 라우팅
+    │   │   ├── controller/      # Auth, Group, Store, Donation, Usage,
+    │   │   │                   # Snapshot, Health, 호환 CommandController
+    │   │   │   └── legacy/     # 기존 v1 ApiController
     │   │   ├── service/         # 인증·후원·가게·QR 등 비즈니스 로직
     │   │   ├── repository/      # JDBC 공통 데이터 접근 (DatabaseRepository)
     │   │   ├── dto/             # 요청 데이터와 유효성 검증
@@ -73,3 +75,5 @@ java -jar build/libs/hantteok-server-0.1.0.jar
 Windows 제한 토큰 환경에서 기존 H2 파일이 읽기 전용으로 잘못 판정될 때만 `-Dhantteok.h2.writeProbe=true`와 `-Dspring.datasource.url="jdbc:h2:writeprobe:./data/hantteok;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH;LOCK_TIMEOUT=10000"`를 `-jar` 앞에 지정할 수 있습니다. 일반 실행에는 필요하지 않습니다.
 
 자세한 최신 계약은 [v2 API 문서](docs/api-v2.md), 기존 계약은 [v1 문서](docs/api-v1.md)를 확인하세요.
+
+기능별 v2 API는 [컨트롤러·경로 표](docs/api-v2.md#기능별-컨트롤러와-경로)를 참고하세요. 기존 `/api/v2/commands`도 호환용으로 지원합니다.
