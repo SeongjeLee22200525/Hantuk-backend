@@ -1,11 +1,8 @@
 package app.hantteok;
 
-import java.time.Clock;
+import app.hantteok.infrastructure.h2.WritableFilePath;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 public class ServerApplication {
@@ -15,6 +12,4 @@ public class ServerApplication {
         }
         SpringApplication.run(ServerApplication.class, args);
     }
-    @Bean Clock clock() { return Clock.systemUTC(); }
-    @Bean PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
 }
