@@ -1,7 +1,8 @@
 package app.hantteok.service;
 
-import java.util.Map;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 /** All HTTP command routes share authentication and transactional idempotency. */
 @Service
@@ -14,8 +15,8 @@ public class CommandService {
         this.service = service;
     }
 
-    public Map<String, Object> execute(String authorization, String commandId,
-                                       String action, Map<String, Object> data) {
+    public Map<String, Object> execute(
+            String authorization, String commandId, String action, Map<String, Object> data) {
         return service.command(auth.user(authorization), commandId, action, data);
     }
 }

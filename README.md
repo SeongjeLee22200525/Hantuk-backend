@@ -44,13 +44,18 @@ hantuk-backend/
     │   │   ├── controller/      # Auth, Group, Store, Donation, Usage,
     │   │   │                   # Snapshot, Health, 호환 CommandController
     │   │   │   └── legacy/     # 기존 v1 ApiController
-    │   │   ├── service/         # 인증·후원·가게·QR 등 비즈니스 로직
-    │   │   ├── repository/      # JDBC 공통 데이터 접근 (DatabaseRepository)
+    │   │   ├── service/         # 기능별 비즈니스 로직
+    │   │   │                   # Group/Store/Donation/Usage/Favorite/Snapshot
+    │   │   │                   # PrototypeService: 트랜잭션·명령 조정
+    │   │   ├── repository/      # 공통 JDBC + PrototypeStateRepository
+    │   │   │                   # 상태 잠금·저장·중복 명령 기록
     │   │   ├── dto/             # 요청 데이터와 유효성 검증
     │   │   ├── bootstrap/       # local 프로필 샘플 데이터 초기화
     │   │   ├── common/
     │   │   │   ├── error/       # 공통 예외·HTTP 오류 응답
-    │   │   │   └── security/    # 토큰 해시
+    │   │   │   ├── security/    # 토큰 해시
+    │   │   │   ├── validation/  # 문자열·날짜·이모지 길이 검증
+    │   │   │   └── state/       # 현재 JSON 상태 구조의 공통 접근
     │   │   └── infrastructure/h2/ # 로컬 환경용 선택적 파일 어댑터
     │   └── resources/
     │       ├── application.yml
@@ -60,7 +65,7 @@ hantuk-backend/
         └── resources/         # 테스트 런타임 설정
 ```
 
-컨트롤러·서비스·리포지토리 계층으로 패키지를 묶었습니다. v1과 v2 클래스는 각 계층 안에서 클래스명과 API 경로로 구분합니다. 현재 repository의 Database는 공통 JDBC 실행을 담당하며 SQL과 도메인 검증은 기존 서비스에 유지합니다. v2는 현재 프로토타입의 상태 JSON과 트랜잭션 잠금을 사용합니다. 엔티티별 DB 정규화는 별도 작업이며 이번 빌드·구조 변경은 저장 데이터와 API 계약을 유지합니다.
+컨트롤러·서비스·리포지토리 계층으로 패키지를 묶었습니다. v1과 v2 클래스는 각 계층 안에서 클래스명과 API 경로로 구분합니다. DatabaseRepository는 공통 JDBC 실행을, PrototypeStateRepository는 v2 상태·명령 기록의 SQL을 담당합니다. 인증과 기존 v1 SQL은 해당 서비스에서 공통 JDBC 계층을 사용합니다. v2는 현재 프로토타입의 상태 JSON과 트랜잭션 잠금을 사용합니다. 엔티티별 DB 정규화는 별도 작업이며 이번 빌드·구조 변경은 저장 데이터와 API 계약을 유지합니다.
 
 ## 계정과 환경 설정
 
@@ -77,3 +82,16 @@ Windows 제한 토큰 환경에서 기존 H2 파일이 읽기 전용으로 잘�
 자세한 최신 계약은 [v2 API 문서](docs/api-v2.md), 기존 계약은 [v1 문서](docs/api-v1.md)를 확인하세요.
 
 기능별 v2 API는 [컨트롤러·경로 표](docs/api-v2.md#기능별-컨트롤러와-경로)를 참고하세요. 기존 `/api/v2/commands`도 호환용으로 지원합니다.
+
+## 코드 읽기와 스타일
+
+요청 흐름과 클래스별 책임은 [서버 구조 안내](docs/architecture.md)에 정리했습니다. 기능 수정은 해당 컨트롤러와 서비스부터 확인하세요. `PrototypeService`는 상태 잠금, 중복 요청 확인, 기능 서비스 호출, 저장 순서만 조정합니다.
+
+```powershell
+# Java 소스·테스트 자동 정렬 (들여쓰기 4칸)
+.\gradlew.bat formatJava
+# 수정 없이 포맷 검사
+.\gradlew.bat checkJavaFormat
+```
+
+`build`의 `check` 단계에도 포맷 검사가 포함됩니다. 포맷 도구는 버전을 고정했고 애플리케이션 런타임에는 포함되지 않습니다. `.editorconfig`는 UTF-8, 줄 끝, 기본 들여쓰기 규칙을 지정합니다.

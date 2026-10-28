@@ -2,6 +2,7 @@ package app.hantteok.controller;
 
 import app.hantteok.service.PrototypeAuthService;
 import app.hantteok.service.PrototypeService;
+
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,7 +17,8 @@ public class SnapshotController {
     }
 
     @GetMapping
-    public Object snapshot(@RequestHeader(value = "Authorization", required = false) String authorization) {
+    public Object snapshot(
+            @RequestHeader(value = "Authorization", required = false) String authorization) {
         return service.snapshot(auth.user(authorization));
     }
 }

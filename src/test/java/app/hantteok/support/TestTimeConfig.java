@@ -6,5 +6,9 @@ import org.springframework.context.annotation.Primary;
 
 @TestConfiguration
 public class TestTimeConfig {
-    @Bean @Primary TestClock testClock() { return new TestClock(); }
+    @Bean
+    @Primary
+    TestClock testClock() {
+        return new TestClock();
+    }
 }

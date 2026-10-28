@@ -1,6 +1,7 @@
 package app.hantteok;
 
 import app.hantteok.infrastructure.h2.WritableFilePath;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

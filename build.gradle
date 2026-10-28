@@ -36,3 +36,39 @@ tasks.withType(JavaCompile).configureEach {
 tasks.named('test') { useJUnitPlatform() }
 tasks.named('bootJar') { archiveFileName = "hantteok-server-${version}.jar" }
 tasks.named('jar') { enabled = false }
+
+// Pinned formatter; kept off the application runtime classpath.
+configurations { javaFormatter }
+dependencies {
+    javaFormatter('com.google.googlejavaformat:google-java-format:1.24.0:all-deps') {
+        transitive = false
+    }
+}
+
+def javaSources = fileTree('src') { include '**/*.java' }
+def formatterJava = javaToolchains.launcherFor {
+    languageVersion = JavaLanguageVersion.of(17)
+}
+
+tasks.register('formatJava', Exec) {
+    group = 'formatting'
+    description = 'Format Java sources and tests with four-space indentation.'
+    doFirst {
+        commandLine formatterJava.get().executablePath.asFile, '-jar',
+            configurations.javaFormatter.singleFile, '--aosp', '--replace'
+        args javaSources.files.sort().collect { it.absolutePath }
+    }
+}
+
+tasks.register('checkJavaFormat', Exec) {
+    group = 'verification'
+    description = 'Fail when Java sources differ from the committed formatting style.'
+    inputs.files(javaSources)
+    doFirst {
+        commandLine formatterJava.get().executablePath.asFile, '-jar',
+            configurations.javaFormatter.singleFile, '--aosp', '--dry-run', '--set-exit-if-changed'
+        args javaSources.files.sort().collect { it.absolutePath }
+    }
+}
+
+tasks.named('check') { dependsOn 'checkJavaFormat' }
