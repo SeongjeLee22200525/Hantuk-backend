@@ -1,8 +1,8 @@
-package app.hantteok.legacy;
+package app.hantteok.bootstrap;
 
-import app.hantteok.common.persistence.Database;
+import app.hantteok.repository.Database;
 import app.hantteok.common.error.ApiException;
-import static app.hantteok.common.persistence.Database.*;
+import static app.hantteok.repository.Database.*;
 import java.time.temporal.ChronoUnit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;

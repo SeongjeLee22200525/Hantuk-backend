@@ -41,13 +41,15 @@ hantuk-backend/
     │   ├── java/app/hantteok/
     │   │   ├── ServerApplication.java
     │   │   ├── config/          # 웹·CORS, 시계, 비밀번호 인코더
+    │   │   ├── controller/      # HTTP 요청·응답과 API 라우팅
+    │   │   ├── service/         # 인증·후원·가게·QR 등 비즈니스 로직
+    │   │   ├── repository/      # JDBC 공통 데이터 접근 (Database)
+    │   │   ├── dto/             # 요청 데이터와 유효성 검증
+    │   │   ├── bootstrap/       # local 프로필 샘플 데이터 초기화
     │   │   ├── common/
     │   │   │   ├── error/       # 공통 예외·HTTP 오류 응답
-    │   │   │   ├── persistence/ # JDBC와 DB 공통 기능
     │   │   │   └── security/    # 토큰 해시
-    │   │   ├── infrastructure/h2/ # 로컬 환경용 선택적 파일 어댑터
-    │   │   ├── prototype/      # 최신 v2 인증·명령·조회·샘플 데이터
-    │   │   └── legacy/         # 기존 v1 기능과 호환 API
+    │   │   └── infrastructure/h2/ # 로컬 환경용 선택적 파일 어댑터
     │   └── resources/
     │       ├── application.yml
     │       └── db/migration/   # Flyway V1·V2: 기존 스키마 유지
@@ -56,7 +58,7 @@ hantuk-backend/
         └── resources/         # 테스트 런타임 설정
 ```
 
-API 버전별 기능을 함께 두고 공통 인프라만 분리했습니다. v2는 현재 프로토타입의 상태 JSON과 트랜잭션 잠금을 사용합니다. 엔티티별 DB 정규화는 별도 작업이며 이번 빌드·구조 변경은 저장 데이터와 API 계약을 유지합니다.
+컨트롤러·서비스·리포지토리 계층으로 패키지를 묶었습니다. v1과 v2 클래스는 각 계층 안에서 클래스명과 API 경로로 구분합니다. 현재 repository의 Database는 공통 JDBC 실행을 담당하며 SQL과 도메인 검증은 기존 서비스에 유지합니다. v2는 현재 프로토타입의 상태 JSON과 트랜잭션 잠금을 사용합니다. 엔티티별 DB 정규화는 별도 작업이며 이번 빌드·구조 변경은 저장 데이터와 API 계약을 유지합니다.
 
 ## 계정과 환경 설정
 

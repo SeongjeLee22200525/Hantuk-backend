@@ -1,10 +1,10 @@
-package app.hantteok.prototype;
+package app.hantteok.service;
 
-import app.hantteok.common.persistence.Database;
+import app.hantteok.repository.Database;
 import app.hantteok.common.error.ApiException;
 import app.hantteok.common.security.TokenHash;
-import static app.hantteok.common.persistence.Database.*;
-import static app.hantteok.prototype.PrototypeAuth.*;
+import static app.hantteok.repository.Database.*;
+import static app.hantteok.service.PrototypeAuth.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import java.security.SecureRandom;

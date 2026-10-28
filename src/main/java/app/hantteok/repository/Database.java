@@ -1,4 +1,4 @@
-package app.hantteok.common.persistence;
+package app.hantteok.repository;
 
 import app.hantteok.common.error.ApiException;
 import java.sql.Timestamp;

@@ -1,8 +1,8 @@
 package app.hantteok.config;
 
-import app.hantteok.common.persistence.Database;
+import app.hantteok.repository.Database;
 import app.hantteok.common.error.ApiException;
-import app.hantteok.legacy.AuthService;
+import app.hantteok.service.AuthService;
 import jakarta.servlet.http.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

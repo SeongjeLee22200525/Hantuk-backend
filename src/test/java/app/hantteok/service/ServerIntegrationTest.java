@@ -1,10 +1,12 @@
-package app.hantteok.legacy;
+package app.hantteok.service;
 
-import app.hantteok.common.persistence.Database;
+import app.hantteok.dto.Requests;
+import app.hantteok.bootstrap.DemoData;
+import app.hantteok.repository.Database;
 import app.hantteok.common.error.ApiException;
 import app.hantteok.support.TestTimeConfig;
 import app.hantteok.support.TestClock;
-import static app.hantteok.common.persistence.Database.*;
+import static app.hantteok.repository.Database.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;

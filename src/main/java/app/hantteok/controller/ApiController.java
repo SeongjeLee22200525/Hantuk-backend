@@ -1,8 +1,15 @@
-package app.hantteok.legacy;
+package app.hantteok.controller;
 
-import app.hantteok.common.persistence.Database;
+import app.hantteok.service.AuthService;
+import app.hantteok.service.BenefitService;
+import app.hantteok.service.CatalogService;
+import app.hantteok.service.MerchantService;
+import app.hantteok.service.QrService;
+import app.hantteok.service.SupportService;
+import app.hantteok.dto.Requests;
+import app.hantteok.repository.Database;
 import app.hantteok.common.error.ApiException;
-import static app.hantteok.common.persistence.Database.*;
+import static app.hantteok.repository.Database.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.time.LocalDate;

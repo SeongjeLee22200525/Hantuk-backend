@@ -1,8 +1,9 @@
-package app.hantteok.legacy;
+package app.hantteok.service;
 
-import app.hantteok.common.persistence.Database;
+import app.hantteok.dto.Requests;
+import app.hantteok.repository.Database;
 import app.hantteok.common.error.ApiException;
-import static app.hantteok.common.persistence.Database.*;
+import static app.hantteok.repository.Database.*;
 import java.util.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,8 +1,10 @@
-package app.hantteok.prototype;
+package app.hantteok.controller;
 
-import app.hantteok.common.persistence.Database;
+import app.hantteok.service.PrototypeAuth;
+import app.hantteok.service.PrototypeService;
+import app.hantteok.repository.Database;
 import app.hantteok.common.error.ApiException;
-import static app.hantteok.common.persistence.Database.map;
+import static app.hantteok.repository.Database.map;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import java.util.Map;

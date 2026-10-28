@@ -1,4 +1,4 @@
-package app.hantteok.legacy;
+package app.hantteok.dto;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;

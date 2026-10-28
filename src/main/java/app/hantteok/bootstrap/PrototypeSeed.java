@@ -1,8 +1,8 @@
-package app.hantteok.prototype;
+package app.hantteok.bootstrap;
 
-import app.hantteok.common.persistence.Database;
+import app.hantteok.repository.Database;
 import app.hantteok.common.error.ApiException;
-import static app.hantteok.common.persistence.Database.*;
+import static app.hantteok.repository.Database.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.*;
 import java.util.*;

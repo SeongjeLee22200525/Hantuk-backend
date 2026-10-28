@@ -1,9 +1,10 @@
-package app.hantteok.legacy;
+package app.hantteok.service;
 
-import app.hantteok.common.persistence.Database;
+import app.hantteok.dto.Requests;
+import app.hantteok.repository.Database;
 import app.hantteok.common.error.ApiException;
 import app.hantteok.common.security.TokenHash;
-import static app.hantteok.common.persistence.Database.*;
+import static app.hantteok.repository.Database.*;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.time.temporal.ChronoUnit;

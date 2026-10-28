@@ -1,9 +1,9 @@
-package app.hantteok.prototype;
+package app.hantteok.service;
 
-import app.hantteok.common.persistence.Database;
+import app.hantteok.repository.Database;
 import app.hantteok.common.error.ApiException;
 import app.hantteok.common.security.TokenHash;
-import static app.hantteok.common.persistence.Database.*;
+import static app.hantteok.repository.Database.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
@@ -22,7 +22,7 @@ public class PrototypeAuth {
     final boolean demo;
     private final SecureRandom random=new SecureRandom();
     PrototypeAuth(Database db,PasswordEncoder passwords,@Value("${app.demo-enabled}") boolean demo) { this.db=db; this.passwords=passwords; this.demo=demo; }
-    boolean demoEnabled() { return demo; }
+    public boolean demoEnabled() { return demo; }
     boolean invitationMatches(String code,String hash) { return passwords.matches(code,hash); }
     static String key(String s) { return s==null?"":s.trim().toLowerCase(Locale.ROOT); }
     static String text(Map<String,Object> r,String name,int max,boolean required) {
@@ -43,7 +43,7 @@ public class PrototypeAuth {
     }
     LocalDate today() { return db.now().atZone(ZoneId.of("Asia/Seoul")).toLocalDate(); }
     private String newToken() { byte[] b=new byte[32]; random.nextBytes(b); return Base64.getUrlEncoder().withoutPadding().encodeToString(b); }
-    String user(String header) {
+    public String user(String header) {
         if(header==null || !header.startsWith("Bearer ") || header.length()>256) throw ApiException.unauthorized();
         var list=db.all("SELECT user_id FROM prototype_sessions WHERE token_hash=? AND expires_at>?",TokenHash.digest(header.substring(7)),db.time());
         if(list.isEmpty()) throw ApiException.unauthorized();
@@ -54,7 +54,7 @@ public class PrototypeAuth {
         return map("id",a.get("id"),"name",a.get("name"),"birthDate",a.get("birth_date").toString(),"email",a.get("email"),"phoneNumber",a.get("phone_number"));
     }
     boolean admin(String user) { return "ADMIN".equals(db.one("SELECT role FROM prototype_accounts WHERE id=?",user).get("role")); }
-    boolean available(String id) { return id!=null && id.matches("[A-Za-z0-9]{4,20}") && db.count("SELECT COUNT(*) FROM prototype_accounts WHERE id=?",key(id))==0; }
+    public boolean available(String id) { return id!=null && id.matches("[A-Za-z0-9]{4,20}") && db.count("SELECT COUNT(*) FROM prototype_accounts WHERE id=?",key(id))==0; }
     @Transactional public Map<String,Object> login(Map<String,Object> r) {
         String id=key(text(r,"id",20,true));
         String password=r.get("password") instanceof String value?value:"";
@@ -97,5 +97,5 @@ public class PrototypeAuth {
         db.exec("UPDATE prototype_email_challenges SET consumed=TRUE WHERE id=?",proof);
         return profile(id);
     }
-    void logout(String header) { user(header); db.exec("DELETE FROM prototype_sessions WHERE token_hash=?",TokenHash.digest(header.substring(7))); }
+    public void logout(String header) { user(header); db.exec("DELETE FROM prototype_sessions WHERE token_hash=?",TokenHash.digest(header.substring(7))); }
 }
