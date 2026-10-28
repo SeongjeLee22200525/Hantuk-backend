@@ -1,9 +1,9 @@
 package app.hantteok.service;
 
 import app.hantteok.dto.Requests;
-import app.hantteok.repository.Database;
+import app.hantteok.repository.DatabaseRepository;
 import app.hantteok.common.error.ApiException;
-import static app.hantteok.repository.Database.*;
+import static app.hantteok.repository.DatabaseRepository.*;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -11,9 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class BenefitService {
-    final Database db;
+    final DatabaseRepository db;
     private final String paymentMode;
-    BenefitService(Database db,@Value("${app.payment-mode}") String paymentMode) { this.db=db; this.paymentMode=paymentMode; }
+    BenefitService(DatabaseRepository db,@Value("${app.payment-mode}") String paymentMode) { this.db=db; this.paymentMode=paymentMode; }
     String state(Map<String,Object> b) {
         if(!"active".equals(str(b,"status"))) return str(b,"status");
         if(num(b,"remaining")<=0) return "exhausted";

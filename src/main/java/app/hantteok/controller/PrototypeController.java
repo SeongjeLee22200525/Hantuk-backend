@@ -1,10 +1,10 @@
 package app.hantteok.controller;
 
-import app.hantteok.service.PrototypeAuth;
+import app.hantteok.service.PrototypeAuthService;
 import app.hantteok.service.PrototypeService;
-import app.hantteok.repository.Database;
+import app.hantteok.repository.DatabaseRepository;
 import app.hantteok.common.error.ApiException;
-import static app.hantteok.repository.Database.map;
+import static app.hantteok.repository.DatabaseRepository.map;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import java.util.Map;
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v2")
 public class PrototypeController {
-    private final PrototypeAuth auth;private final PrototypeService service;
-    PrototypeController(PrototypeAuth auth,PrototypeService service){this.auth=auth;this.service=service;}
+    private final PrototypeAuthService auth;private final PrototypeService service;
+    PrototypeController(PrototypeAuthService auth,PrototypeService service){this.auth=auth;this.service=service;}
     @GetMapping("/health") Object health(){return map("status","UP","apiVersion",2,"demo",auth.demoEnabled(),"paymentMode","mock");}
     @GetMapping("/auth/availability") Object availability(@RequestParam String id){return map("available",auth.available(id));}
     @PostMapping("/auth/email-challenges") Object challenge(@RequestBody Map<String,Object> data){return auth.challenge(data);}

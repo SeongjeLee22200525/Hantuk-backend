@@ -1,9 +1,9 @@
 package app.hantteok.service;
 
-import app.hantteok.repository.Database;
+import app.hantteok.repository.DatabaseRepository;
 import app.hantteok.common.error.ApiException;
 import app.hantteok.common.security.TokenHash;
-import static app.hantteok.repository.Database.*;
+import static app.hantteok.repository.DatabaseRepository.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
@@ -16,12 +16,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class PrototypeAuth {
-    final Database db;
+public class PrototypeAuthService {
+    final DatabaseRepository db;
     final PasswordEncoder passwords;
     final boolean demo;
     private final SecureRandom random=new SecureRandom();
-    PrototypeAuth(Database db,PasswordEncoder passwords,@Value("${app.demo-enabled}") boolean demo) { this.db=db; this.passwords=passwords; this.demo=demo; }
+    PrototypeAuthService(DatabaseRepository db,PasswordEncoder passwords,@Value("${app.demo-enabled}") boolean demo) { this.db=db; this.passwords=passwords; this.demo=demo; }
     public boolean demoEnabled() { return demo; }
     boolean invitationMatches(String code,String hash) { return passwords.matches(code,hash); }
     static String key(String s) { return s==null?"":s.trim().toLowerCase(Locale.ROOT); }

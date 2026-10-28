@@ -1,10 +1,10 @@
 package app.hantteok.service;
 
 import app.hantteok.dto.Requests;
-import app.hantteok.repository.Database;
+import app.hantteok.repository.DatabaseRepository;
 import app.hantteok.common.error.ApiException;
 import app.hantteok.common.security.TokenHash;
-import static app.hantteok.repository.Database.*;
+import static app.hantteok.repository.DatabaseRepository.*;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.time.temporal.ChronoUnit;
@@ -17,11 +17,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthService {
-    private final Database db;
+    private final DatabaseRepository db;
     private final PasswordEncoder passwords;
     private final int sessionHours;
     private final SecureRandom random = new SecureRandom();
-    AuthService(Database db, PasswordEncoder passwords, @Value("${app.session-hours}") int sessionHours) {
+    AuthService(DatabaseRepository db, PasswordEncoder passwords, @Value("${app.session-hours}") int sessionHours) {
         this.db=db; this.passwords=passwords; this.sessionHours=sessionHours;
     }
     @Transactional

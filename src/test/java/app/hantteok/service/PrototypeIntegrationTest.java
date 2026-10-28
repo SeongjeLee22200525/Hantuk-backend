@@ -1,11 +1,11 @@
 package app.hantteok.service;
 
 import app.hantteok.bootstrap.PrototypeSeed;
-import app.hantteok.repository.Database;
+import app.hantteok.repository.DatabaseRepository;
 import app.hantteok.common.error.ApiException;
 import app.hantteok.support.TestTimeConfig;
 import app.hantteok.support.TestClock;
-import static app.hantteok.repository.Database.*;
+import static app.hantteok.repository.DatabaseRepository.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -31,7 +31,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @SuppressWarnings("unchecked")
 class PrototypeIntegrationTest {
     @Autowired org.springframework.security.crypto.password.PasswordEncoder passwords;
-    @Autowired Database db; @Autowired PrototypeSeed seed; @Autowired PrototypeAuth auth; @Autowired PrototypeService service;
+    @Autowired DatabaseRepository db; @Autowired PrototypeSeed seed; @Autowired PrototypeAuthService auth; @Autowired PrototypeService service;
     @Autowired TestClock clock; @Autowired MockMvc mvc; @Autowired ObjectMapper json;
     @BeforeEach void reset() throws Exception {
         clock.time=Instant.parse("2026-10-28T04:00:00Z");
@@ -67,7 +67,7 @@ class PrototypeIntegrationTest {
         assertThatThrownBy(()->auth.register(map("id","wrongmail","password","password123!","name","새 회원","birthDate","2001-01-01","phoneNumber","01012345678","email","test@example.test","verificationToken",good.get("challengeId")))).isInstanceOf(ApiException.class);
         clock.time=clock.time.plus(Duration.ofMinutes(10));
         assertThat(auth.verify(map("challengeId",good.get("challengeId"),"code","123456")).get("verified")).isEqualTo(false);
-        var production=new PrototypeAuth(db,passwords,false);
+        var production=new PrototypeAuthService(db,passwords,false);
         assertThatThrownBy(()->production.challenge(map("email","test@example.test"))).isInstanceOf(ApiException.class);
     }
     @Test void groupApplicationsInvitationAndFavoritesEnforceOwnership() {

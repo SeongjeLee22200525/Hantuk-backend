@@ -2,11 +2,11 @@ package app.hantteok.service;
 
 import app.hantteok.dto.Requests;
 import app.hantteok.bootstrap.DemoData;
-import app.hantteok.repository.Database;
+import app.hantteok.repository.DatabaseRepository;
 import app.hantteok.common.error.ApiException;
 import app.hantteok.support.TestTimeConfig;
 import app.hantteok.support.TestClock;
-import static app.hantteok.repository.Database.*;
+import static app.hantteok.repository.DatabaseRepository.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -31,7 +31,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 @Import(TestTimeConfig.class)
 @TestExecutionListeners(listeners=DependencyInjectionTestExecutionListener.class,mergeMode=TestExecutionListeners.MergeMode.REPLACE_DEFAULTS)
 class ServerIntegrationTest {
-    @Autowired Database db;
+    @Autowired DatabaseRepository db;
     @Autowired DemoData seed;
     @Autowired QrService qr;
     @Autowired BenefitService benefits;

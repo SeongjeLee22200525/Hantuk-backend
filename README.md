@@ -43,7 +43,7 @@ hantuk-backend/
     │   │   ├── config/          # 웹·CORS, 시계, 비밀번호 인코더
     │   │   ├── controller/      # HTTP 요청·응답과 API 라우팅
     │   │   ├── service/         # 인증·후원·가게·QR 등 비즈니스 로직
-    │   │   ├── repository/      # JDBC 공통 데이터 접근 (Database)
+    │   │   ├── repository/      # JDBC 공통 데이터 접근 (DatabaseRepository)
     │   │   ├── dto/             # 요청 데이터와 유효성 검증
     │   │   ├── bootstrap/       # local 프로필 샘플 데이터 초기화
     │   │   ├── common/

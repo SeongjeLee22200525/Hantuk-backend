@@ -1,9 +1,9 @@
 package app.hantteok.service;
 
 import app.hantteok.dto.Requests;
-import app.hantteok.repository.Database;
+import app.hantteok.repository.DatabaseRepository;
 import app.hantteok.common.error.ApiException;
-import static app.hantteok.repository.Database.*;
+import static app.hantteok.repository.DatabaseRepository.*;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,10 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CatalogService {
-    private final Database db;
+    private final DatabaseRepository db;
     private final PasswordEncoder passwords;
     private final boolean demo;
-    CatalogService(Database db,PasswordEncoder passwords,@Value("${app.demo-enabled}") boolean demo) { this.db=db; this.passwords=passwords; this.demo=demo; }
+    CatalogService(DatabaseRepository db,PasswordEncoder passwords,@Value("${app.demo-enabled}") boolean demo) { this.db=db; this.passwords=passwords; this.demo=demo; }
     public List<Map<String,Object>> communities(String user) {
         return db.all("SELECT c.*, CASE WHEN m.user_id IS NULL THEN FALSE ELSE TRUE END AS verified FROM communities c LEFT JOIN memberships m ON m.community_id=c.id AND m.user_id=? ORDER BY c.id",user).stream()
             .map(c->map("id",c.get("id"),"name",c.get("name"),"description",c.get("description"),"emailDomain",c.get("email_domain"),"verified",c.get("verified"))).toList();

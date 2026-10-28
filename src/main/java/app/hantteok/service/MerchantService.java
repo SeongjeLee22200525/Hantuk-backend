@@ -1,8 +1,8 @@
 package app.hantteok.service;
 
-import app.hantteok.repository.Database;
+import app.hantteok.repository.DatabaseRepository;
 import app.hantteok.common.error.ApiException;
-import static app.hantteok.repository.Database.*;
+import static app.hantteok.repository.DatabaseRepository.*;
 import java.time.*;
 import java.util.*;
 import org.springframework.stereotype.Service;
@@ -11,9 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class MerchantService {
     private static final ZoneId SEOUL=ZoneId.of("Asia/Seoul");
-    private final Database db;
+    private final DatabaseRepository db;
     private final BenefitService benefits;
-    MerchantService(Database db,BenefitService benefits) { this.db=db; this.benefits=benefits; }
+    MerchantService(DatabaseRepository db,BenefitService benefits) { this.db=db; this.benefits=benefits; }
     public Map<String,Object> dashboard(String user,String shop) {
         db.ownShop(user,shop);
         var transactions=transactions(user,shop);

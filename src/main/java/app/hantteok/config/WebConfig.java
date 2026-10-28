@@ -1,6 +1,6 @@
 package app.hantteok.config;
 
-import app.hantteok.repository.Database;
+import app.hantteok.repository.DatabaseRepository;
 import app.hantteok.common.error.ApiException;
 import app.hantteok.service.AuthService;
 import jakarta.servlet.http.*;

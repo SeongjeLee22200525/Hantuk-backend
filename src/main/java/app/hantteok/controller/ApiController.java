@@ -7,9 +7,9 @@ import app.hantteok.service.MerchantService;
 import app.hantteok.service.QrService;
 import app.hantteok.service.SupportService;
 import app.hantteok.dto.Requests;
-import app.hantteok.repository.Database;
+import app.hantteok.repository.DatabaseRepository;
 import app.hantteok.common.error.ApiException;
-import static app.hantteok.repository.Database.*;
+import static app.hantteok.repository.DatabaseRepository.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
 public class ApiController {
-    private final Database db;
+    private final DatabaseRepository db;
     private final AuthService auth;
     private final CatalogService catalog;
     private final BenefitService benefits;
@@ -29,7 +29,7 @@ public class ApiController {
     private final SupportService support;
     private final MerchantService merchant;
     private final boolean demo;
-    ApiController(Database db,AuthService auth,CatalogService catalog,BenefitService benefits,QrService qr,SupportService support,MerchantService merchant,@Value("${app.demo-enabled}") boolean demo) {
+    ApiController(DatabaseRepository db,AuthService auth,CatalogService catalog,BenefitService benefits,QrService qr,SupportService support,MerchantService merchant,@Value("${app.demo-enabled}") boolean demo) {
         this.db=db; this.auth=auth; this.catalog=catalog; this.benefits=benefits; this.qr=qr; this.support=support; this.merchant=merchant; this.demo=demo;
     }
     @GetMapping("/health") public Object health() { db.count("SELECT COUNT(*) FROM communities"); return map("status","UP","demo",demo,"paymentMode","mock"); }

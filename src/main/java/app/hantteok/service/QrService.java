@@ -1,9 +1,9 @@
 package app.hantteok.service;
 
 import app.hantteok.dto.Requests;
-import app.hantteok.repository.Database;
+import app.hantteok.repository.DatabaseRepository;
 import app.hantteok.common.error.ApiException;
-import static app.hantteok.repository.Database.*;
+import static app.hantteok.repository.DatabaseRepository.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import org.springframework.stereotype.Service;
@@ -11,9 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class QrService {
-    private final Database db;
+    private final DatabaseRepository db;
     private final BenefitService benefits;
-    QrService(Database db,BenefitService benefits) { this.db=db; this.benefits=benefits; }
+    QrService(DatabaseRepository db,BenefitService benefits) { this.db=db; this.benefits=benefits; }
     private Map<String,Object> view(Map<String,Object> r) {
         String status=str(r,"status");
         if((status.equals("issued") || status.equals("pending")) && !instant(r,"expires_at").isAfter(db.now())) status="expired";

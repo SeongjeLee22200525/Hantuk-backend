@@ -1,8 +1,8 @@
 package app.hantteok.bootstrap;
 
-import app.hantteok.repository.Database;
+import app.hantteok.repository.DatabaseRepository;
 import app.hantteok.common.error.ApiException;
-import static app.hantteok.repository.Database.*;
+import static app.hantteok.repository.DatabaseRepository.*;
 import java.time.temporal.ChronoUnit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
@@ -14,10 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 /** Demo credentials and invitations are installed only in the local profile. */
 @Component
 public class DemoData implements ApplicationRunner {
-    private final Database db;
+    private final DatabaseRepository db;
     private final PasswordEncoder passwords;
     private final boolean enabled;
-    DemoData(Database db,PasswordEncoder passwords,@Value("${app.demo-enabled}") boolean enabled) { this.db=db; this.passwords=passwords; this.enabled=enabled; }
+    DemoData(DatabaseRepository db,PasswordEncoder passwords,@Value("${app.demo-enabled}") boolean enabled) { this.db=db; this.passwords=passwords; this.enabled=enabled; }
     @Override @Transactional public void run(ApplicationArguments args) {
         if(!enabled || db.count("SELECT COUNT(*) FROM app_users WHERE id='demo-user'")>0) return;
         user("demo-user","demo@hantteok.app","demo1234","다정한 이웃","USER");

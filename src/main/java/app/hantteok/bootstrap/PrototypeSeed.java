@@ -1,8 +1,8 @@
 package app.hantteok.bootstrap;
 
-import app.hantteok.repository.Database;
+import app.hantteok.repository.DatabaseRepository;
 import app.hantteok.common.error.ApiException;
-import static app.hantteok.repository.Database.*;
+import static app.hantteok.repository.DatabaseRepository.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.*;
 import java.util.*;
@@ -14,8 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class PrototypeSeed implements ApplicationRunner {
-    private final Database db; private final PasswordEncoder passwords; private final ObjectMapper json; private final boolean demo;
-    PrototypeSeed(Database db,PasswordEncoder passwords,ObjectMapper json,@Value("${app.demo-enabled}") boolean demo) { this.db=db;this.passwords=passwords;this.json=json;this.demo=demo; }
+    private final DatabaseRepository db; private final PasswordEncoder passwords; private final ObjectMapper json; private final boolean demo;
+    PrototypeSeed(DatabaseRepository db,PasswordEncoder passwords,ObjectMapper json,@Value("${app.demo-enabled}") boolean demo) { this.db=db;this.passwords=passwords;this.json=json;this.demo=demo; }
     @Override @Transactional public void run(ApplicationArguments args) throws Exception {
         if(db.count("SELECT COUNT(*) FROM prototype_state WHERE id=1")>0) return;
         var state=map("groups",new ArrayList<>(),"members",new LinkedHashMap<>(),"groupApplications",new ArrayList<>(),"stores",new ArrayList<>(),"storeApplications",new ArrayList<>(),"donations",new ArrayList<>(),"offers",new ArrayList<>(),"requests",new ArrayList<>(),"receipts",new ArrayList<>(),"groupFavorites",new LinkedHashMap<>(),"storeFavorites",new LinkedHashMap<>());

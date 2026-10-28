@@ -1,10 +1,10 @@
 package app.hantteok.service;
 
-import app.hantteok.repository.Database;
+import app.hantteok.repository.DatabaseRepository;
 import app.hantteok.common.error.ApiException;
 import app.hantteok.common.security.TokenHash;
-import static app.hantteok.repository.Database.*;
-import static app.hantteok.service.PrototypeAuth.*;
+import static app.hantteok.repository.DatabaseRepository.*;
+import static app.hantteok.service.PrototypeAuthService.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import java.security.SecureRandom;
@@ -20,9 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 @SuppressWarnings("unchecked")
 public class PrototypeService {
     static final long MAX=9007199254740991L;
-    private final Database db; private final PrototypeAuth auth; private final ObjectMapper json;
+    private final DatabaseRepository db; private final PrototypeAuthService auth; private final ObjectMapper json;
     private final SecureRandom random=new SecureRandom();
-    PrototypeService(Database db,PrototypeAuth auth,ObjectMapper json) { this.db=db;this.auth=auth;this.json=json; }
+    PrototypeService(DatabaseRepository db,PrototypeAuthService auth,ObjectMapper json) { this.db=db;this.auth=auth;this.json=json; }
     private String encode(Object o) { try{return json.writeValueAsString(o);}catch(Exception e){throw new IllegalStateException(e);} }
     private Map<String,Object> decode(Object o) { try{return json.readValue(o.toString(),new TypeReference<>(){});}catch(Exception e){throw new IllegalStateException(e);} }
     private List<Map<String,Object>> rows(Map<String,Object> s,String field) { return (List<Map<String,Object>>)s.get(field); }

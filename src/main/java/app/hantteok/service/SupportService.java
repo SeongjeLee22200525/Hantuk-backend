@@ -1,18 +1,18 @@
 package app.hantteok.service;
 
 import app.hantteok.dto.Requests;
-import app.hantteok.repository.Database;
+import app.hantteok.repository.DatabaseRepository;
 import app.hantteok.common.error.ApiException;
-import static app.hantteok.repository.Database.*;
+import static app.hantteok.repository.DatabaseRepository.*;
 import java.util.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class SupportService {
-    private final Database db;
+    private final DatabaseRepository db;
     private final AuthService auth;
-    SupportService(Database db,AuthService auth) { this.db=db; this.auth=auth; }
+    SupportService(DatabaseRepository db,AuthService auth) { this.db=db; this.auth=auth; }
     private Map<String,Object> view(Map<String,Object> t) {
         return map("id",t.get("id"),"targetId",t.get("target_id"),"type",t.get("type"),"reason",t.get("reason"),"evidence",t.get("evidence"),
             "status",t.get("status"),"date",instant(t,"created_at"),"refundAmount",t.get("refund_amount"));

@@ -11,10 +11,10 @@ import org.springframework.stereotype.Repository;
 
 /** SQL stays parameterized. Row maps are internal; controllers return explicit projections. */
 @Repository
-public class Database {
+public class DatabaseRepository {
     final JdbcTemplate jdbc;
     final Clock clock;
-    Database(JdbcTemplate jdbc, Clock clock) { this.jdbc = jdbc; this.clock = clock; }
+    DatabaseRepository(JdbcTemplate jdbc, Clock clock) { this.jdbc = jdbc; this.clock = clock; }
     public Instant now() { return clock.instant(); }
     public Timestamp time() { return Timestamp.from(now()); }
     public static Timestamp at(Instant value) { return Timestamp.from(value); }
