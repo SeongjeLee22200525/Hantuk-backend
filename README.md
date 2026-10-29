@@ -1,4 +1,4 @@
-> 프로젝트 위치: `C:\Users\user\Hantuk\back-end`. IntelliJ에서 이 폴더를 열고 `Server (Gradle Java 17)` 실행 구성을 사용하세요. 프론트는 형제 폴더 `../front-end`입니다.
+> 프로젝트 위치: `C:\Users\user\Hantuk\back-end`. IntelliJ에서 이 폴더를 열고 `ServerApplication` 실행 구성을 사용하세요. 프론트는 형제 폴더 `../front-end`입니다.
 
 # Hantuck Backend
 
@@ -97,3 +97,7 @@ Windows 제한 토큰 환경에서 기존 H2 파일이 읽기 전용으로 잘�
 ```
 
 `build`의 `check` 단계에도 포맷 검사가 포함됩니다. 포맷 도구는 버전을 고정했고 애플리케이션 런타임에는 포함되지 않습니다. `.editorconfig`는 UTF-8, 줄 끝, 기본 들여쓰기 규칙을 지정합니다.
+
+## IntelliJ 기본 실행
+
+Gradle 프로젝트로 동기화한 뒤 `ServerApplication`을 선택하거나 메인 메서드 옆 ▶로 실행합니다. 프로젝트 SDK와 Gradle JVM은 Java 17이고, 클래스패스 모듈은 `hantuk-backend.main`입니다. 이 PC의 빌드·실행 방식은 IntelliJ IDEA로 지정했습니다. Gradle은 계속 의존성·빌드 설정·테스트를 관리합니다. `Server (Gradle Java 17)`과 CLI `bootRun`은 선택 가능한 대체 실행 방법입니다.
