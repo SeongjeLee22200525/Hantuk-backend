@@ -1,3 +1,5 @@
+> 프로젝트 위치: `C:\Users\user\Hantuk\back-end`. IntelliJ에서 이 폴더를 열고 `Server (Gradle Java 17)` 실행 구성을 사용하세요. 프론트는 형제 폴더 `../front-end`입니다.
+
 # Hantuck Backend
 
 한턱 Flutter 앱을 위한 Spring Boot 서버입니다. 최신 프론트는 `/api/v2`를 사용하며 기존 `/api`도 호환성을 위해 유지합니다.
